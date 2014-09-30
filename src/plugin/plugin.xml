@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin title="Spoon User Console" name="spuc">
+  <lifecycle-listener class="org.pentaho.spuc.SpucLifecycleListener"/>
+  <content-generator
+    id="spuc"
+    type="spuc"
+    title="Spuc Handler"
+    class="org.pentaho.spuc.SpucContentGenerator"
+  />
+<!--
+  <menu-items>
+      <menu-item
+          id="spuc"
+          anchor="tools-submenu"
+          label="Spoon User Console"
+          command="content/spuc/resources/html/spuc.html"
+          type="MENU_ITEM"
+          how="LAST_CHILD"
+      />
+  </menu-items>
+-->
+  <overlays>
+    <overlay id="launch" resourcebundle="api/repos/spuc/resources/messages/messages.properties">
+      <button
+        id="launch_new_transformation"
+        label="${Launcher.SPOON}"
+        image="api/repos/spuc/resources/images/spoon_32x32.png"
+        command="openURL('${Launcher.SPOON}', '${Launcher.SPOON_TOOLTIP}', 'api/repos/spuc/resources/html/spuc.html')"
+      />
+    </overlay>
+    <overlay id="startup.spuc" resourcebundle="api/repos/spuc/resources/messages/launchermessages.properties" priority="2">
+      <toolbar id="mainToolbar">
+        <toolbarbutton
+          id="newTransButton"
+          image="../api/repos/spuc/resources/images/spoon_32x32.png"
+          onclick="mantleXulHandler.openUrl('Spuc','Spuc','api/repos/spuc/resources/html/spuc.html')"
+          tooltiptext="${Launcher.SPOON_TOOLTIP}"
+          insertbefore="dummyPluginContentButton"
+        />
+      </toolbar>
+      <menubar id="newmenu">
+        <menuitem
+          id="spuc" label="Kettle transformation"
+          command="mantleXulHandler.openUrl('Spuc','Spuc','api/repos/spuc/resources/html/spuc.html')"
+          type="MENU_ITEM" how="LAST_CHILD"
+        />
+      </menubar>
+    </overlay>
+  </overlays>
+
+<!--
+  <content-types>
+    <content-type type="ktr" mime-type="text/xml">
+      <title>Kettle transformation</title>
+      <description>Kettle transformation</description>
+      <icon-url>api/repos/spuc/resources/images/newtrans.png</icon-url>
+      <operations>
+        <operation>
+            <id>RUN</id>
+            <perspective>spuc.view</perspective>
+        </operation>
+        <operation>
+            <id>NEWWINDOW</id>
+            <perspective>spuc.view</perspective>
+        </operation>
+        <operation>
+            <id>EDIT</id>
+            <perspective>spuc.edit</perspective>
+        </operation>
+        <operation>
+            <id>SCHEDULE_NEW</id>
+            <perspective>spuc.schedule</perspective>
+        </operation>
+        <operation>
+            <id>SCHEDULE_EDIT</id>
+            <perspective>spuc.schedule</perspective>
+        </operation>
+        <operation>
+            <id>BACKGROUND</id>
+        </operation>
+        <operation>
+            <id>PARAMETER</id>
+        </operation>
+      </operations>
+    </content-type>
+  </content-types>
+
+  <content-generator id="spuc" type="ktr">
+      <classname>com.pentaho.iadhoc.service.AdhocReportContentGenerator</classname>
+      <fileinfo-classname>org.pentaho.reporting.platform.plugin.ReportFileMetaDataProvider</fileinfo-classname>
+      <title>Interactive Reporting Plugin</title>
+  </content-generator>
+-->
+  <external-resources>
+    <file context="spuc">api/repos/spuc/resources/js/spuc-require-js-cfg.js</file>
+  </external-resources>
+
+  <static-paths>
+    <static-path url="/spuc/resources/js" localFolder="resources/js"/>
+    <static-path url="/spuc/resources/css" localFolder="resources/css"/>
+    <static-path url="/spuc/resources/images" localFolder="resources/images"/>
+    <static-path url="/spuc/resources/ui/images" localFolder="resources/ui/images"/>
+    <static-path url="/spuc/resources/html" localFolder="resources/html"/>
+  </static-paths>
+
+</plugin>
+

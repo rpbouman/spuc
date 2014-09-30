@@ -1,0 +1,68 @@
+.splitpane {
+  position:absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top:0px;
+}
+
+.splitpane > .splitpane-splitter {
+  position: absolute;
+  background-color: #cbdde8;
+  border-color: #cbdde8;
+  border-width: 1px;
+  z-index: 10000;
+  /*opacity: .5;*/
+}
+
+.splitpane-vertical > .splitpane-splitter {
+  top: 0px;
+  bottom: 0px;
+  width: 4px;
+  border-style: none solid  none solid;
+  cursor: ew-resize;
+}
+
+.splitpane-horizontal > .splitpane-splitter {
+  left: 0px;
+  right: 0px;
+  height: 4px;
+  border-style: solid none solid none;
+  cursor: ns-resize;
+}
+
+.splitpane-component{
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top:0px;
+}
+
+.splitpane-vertical > .splitpane-component {
+  top: 0px;
+  bottom: 0px;
+  height: 100%;
+}
+
+.splitpane-vertical > .splitpane-component-first {
+  left: 0px;
+}
+
+.splitpane-vertical > .splitpane-component-last {
+  right: 0px;
+}
+
+.splitpane-horizontal > .splitpane-component {
+  left: 0px;
+  right: 0px;
+  width: 100%;
+}
+
+.splitpane-horizontal > .splitpane-component-first {
+  top: 0px;
+}
+
+.splitpane-horizontal > .splitpane-component-last {
+  bottom: 0px;
+}

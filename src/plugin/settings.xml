@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <cacheEnabled>false</cacheEnabled>
+  <max-age>0</max-age>
+  <content-types>
+    <application_x2f_javascript>org.pentaho.spuc.JavascriptDataRenderer</application_x2f_javascript>
+    <application_x2f_json>org.pentaho.spuc.JsonDataRenderer</application_x2f_json>
+    <application_x2f_xml>org.pentaho.spuc.XmlDataRenderer</application_x2f_xml>
+    <text_x2f_xml>org.pentaho.spuc.XmlDataRenderer</text_x2f_xml>
+  </content-types>
+  <default-content-type>application/json</default-content-type>
+  <debug-enabled>false</debug-enabled>
+  <kettle-src-archive>lib/pdi-ce-TRUNK-SNAPSHOT-sources.zip</kettle-src-archive>
+  <kettle-dialogs>resources/ui/dialogs</kettle-dialogs>
+</settings>
+

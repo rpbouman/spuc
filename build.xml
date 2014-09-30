@@ -1,0 +1,159 @@
+<project name="spuc" default="dist" basedir=".">
+  <description>
+    Spuc: Spoon user console
+  </description>
+
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="lib" location="lib"/>
+  <property name="src.java" location="${src}/java"/>
+  <property name="build" location="build"/>
+  <property name="dist" location="dist"/>
+  <property name="dist.all" location="${dist}/${ant.project.name}"/>
+  <property name="src.plugin" location="${src}/plugin"/>
+  <property name="dist.plugin" location="${dist}/plugin"/>
+  <property name="resources"  location="resources"/>
+  <property name="dist.resources" location="${dist}/resources"/>
+  <property name="dist.lib" location="${dist}/lib"/>
+
+  <property name="bi-server-version"  value="4.8-stable"/>
+  <!--<property name="bi-server.dir"  location="/home/rbouman/pentaho-ee/biserver-ee-TRUNK-SNAPSHOT-b1628/biserver-ee"/>-->
+  <property name="bi-server.dir"  location="/home/roland/pentaho-ce/5.0/biserver-ce"/>
+  <property name="bi-server-system.dir"  location="${bi-server.dir}/pentaho-solutions/system"/>
+  <property name="tomcat.dir"  location="${bi-server.dir}/tomcat"/>
+  <property name="tomcat.lib.dir"  location="${tomcat.dir}/lib"/>
+  <property name="bi-server.lib.dir"  location="${tomcat.dir}/webapps/pentaho/WEB-INF/lib"/>
+  <property name="deploy.dir"  location="${bi-server-system.dir}/${ant.project.name}"/>
+
+  <property name="nowarn" value="on"/>
+  <property name="deprecation" value="off"/>
+  <property name="debug" value="on"/>
+  <property name="browser"          value="chromium-browser"/>
+  <property name="sleep"          value="2"/>
+
+  <property name="bihost"           value="localhost"/>
+  <property name="biport"           value="8080"/>
+  <property name="biuser"           value="admin"/>
+  <property name="bipasswd"         value="password"/>
+  <property name="bihome"           value="http://${bihost}:${biport}/pentaho?userid=${biuser}&amp;password=${bipasswd}"/>
+
+  <!-- run ant source.zip from the kettle.src directory before running this. -->
+  <property name="kettle.src" location="/home/roland/eclipse-workspace/kettle-svn-trunk"/>
+  <property name="kettle-images" location="${kettle.src}/assembly/package-res/ui/images"/>
+
+  <property name="java.toolsjar" location="${java.home}/../lib/tools.jar"/>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source" >
+    <echo message="Java home: ${java.home}"/>
+    <mkdir dir="${build}"/>
+    <javac
+      srcdir="${src.java}"
+      destdir="${build}"
+      deprecation="${deprecation}"
+      nowarn="${nowarn}"
+      debug="${debug}"
+    >
+      <classpath>
+        <fileset dir="${tomcat.lib.dir}">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${bi-server.lib.dir}">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${lib}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="pre-dist">
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${dist.all}"/>
+    <mkdir dir="${dist.lib}"/>
+    <mkdir dir="${dist.all}/resources"/>
+    <mkdir dir="${dist.all}/resources/html"/>
+    <mkdir dir="${dist.all}/resources/js"/>
+    <mkdir dir="${dist.all}/resources/css"/>
+    <mkdir dir="${dist.all}/resources/images"/>
+    <mkdir dir="${dist.all}/resources/ui"/>
+    <mkdir dir="${dist.all}/resources/ui/images"/>
+  </target>
+
+  <target name="jar" depends="clean,init,compile,pre-dist">
+    <jar jarfile="${dist.all}/lib/${ant.project.name}.jar" basedir="${build}"/>
+  </target>
+
+  <target name="dist" depends="jar" description="generate the distribution" >
+    <copy todir="${dist.all}">
+      <fileset dir="${src}/plugin"/>
+    </copy>
+
+    <copy todir="${dist.all}/lib">
+      <fileset dir="${lib}"/>
+    </copy>
+    <copy todir="${dist.all}/lib" file="${kettle.src}/dist/pdi-ce-TRUNK-SNAPSHOT-sources.zip"/>
+    <copy todir="${dist.all}/lib" file="${java.toolsjar}"/>
+
+    <copy todir="${dist.all}/resources/html">
+      <fileset dir="${src}/html"/>
+    </copy>
+
+    <copy todir="${dist.all}/resources/js">
+      <fileset dir="${src}/js"/>
+    </copy>
+
+    <copy todir="${dist.all}/resources/css">
+      <fileset dir="${src}/css"/>
+    </copy>
+
+    <copy todir="${dist.all}/resources/images">
+      <fileset dir="${src}/images"/>
+    </copy>
+
+    <copy todir="${dist.all}/resources/ui/images">
+      <fileset dir="${kettle-images}"/>
+    </copy>
+
+    <delete file="${dist}/${ant.project.name}.zip"/>
+    <zip destfile="${dist}/${ant.project.name}.zip">
+      <zipfileset dir="${dist}/${ant.project.name}" prefix="${ant.project.name}"/>
+    </zip>
+  </target>
+
+  <target name="undeploy" description="undeploy distribution">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+  <target name="deploy" depends="dist,undeploy" description="deploy distribution">
+    <unzip src="${dist}/${ant.project.name}.zip" dest="${bi-server-system.dir}"/>
+  </target>
+
+  <target name="startup" depends="shutdown">
+    <echo message="Sleeping for ${sleep} seconds to allow the server to shutdown."/>
+    <sleep seconds="${sleep}"/>
+    <exec executable="${bi-server.dir}/start-pentaho.sh" spawn="true"/>
+  </target>
+
+  <target name="shutdown">
+    <exec executable="${bi-server.dir}/stop-pentaho.sh" spawn="true"/>
+  </target>
+
+  <target name="launch" depends="deploy,startup">
+    <echo message="Sleeping for ${sleep} seconds to allow the server to startup."/>
+    <sleep seconds="${sleep}"/>
+    <exec executable="${browser}" spawn="true">
+      <arg value="${bihome}"/>
+    </exec>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>
